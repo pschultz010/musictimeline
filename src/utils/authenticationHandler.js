@@ -14,18 +14,22 @@ class AuthenticationHandler {
         'user-library-read',
         'user-library-modify',
         'user-top-read',
+        'user-follow-read',
+        'user-follow-modify',
       ],
       serviceConfiguration: {
         authorizationEndpoint: Config.AUTH_ENDPOINT,
         tokenEndpoint: Config.TOKEN_ENDPOINT,
       },
     };
+
+    this.token = 'testtoken';
   }
 
   async onLogin() {
     try {
       const result = await authorize(this.spotifyAuthConfig);
-      alert(JSON.stringify(result));
+      this.token = result.accessToken;
       return result;
     } catch (error) {
       console.log(JSON.stringify(error));

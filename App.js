@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import type {Node} from 'react';
 import {
   SafeAreaView,
@@ -57,11 +57,30 @@ const Section = ({children, title}): Node => {
 };
 
 const App: () => Node = () => {
+  const [artists, setArtists] = useState([]);
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  sayToken = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/followedartists', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Spotify-Token': authHandler.token,
+        }
+      });
+      const json = await response.json();
+      await setArtists(json.artists);
+      alert(artists);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -81,6 +100,7 @@ const App: () => Node = () => {
             Edit <Text style={styles.highlight}>App.js</Text> to change this
             screen and then come back to see your edits.
             <Button onPress={() => authHandler.onLogin()} title="Press to login"/>
+            <Button onPress={() => sayToken()} title="Say Token"/>
           </Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
