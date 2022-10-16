@@ -28,6 +28,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import authHandler from "./src/utils/authenticationHandler";
+import * as SecureStore from 'expo-secure-store';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 const Section = ({children, title}): Node => {
@@ -66,12 +67,13 @@ const App: () => Node = () => {
 
   sayToken = async () => {
     try {
+      let token = await SecureStore.getItemAsync('accessToken');
       const response = await fetch('http://127.0.0.1:5000/followedartists', {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-Spotify-Token': authHandler.token,
+          'X-Spotify-Token': token,
         }
       });
       const json = await response.json();

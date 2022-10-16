@@ -1,5 +1,6 @@
 import {authorize, refresh} from 'react-native-app-auth';
 import Config from "react-native-config";
+import * as SecureStore from 'expo-secure-store';
 
 class AuthenticationHandler {
   constructor() {
@@ -22,14 +23,12 @@ class AuthenticationHandler {
         tokenEndpoint: Config.TOKEN_ENDPOINT,
       },
     };
-
-    this.token = 'testtoken';
   }
 
   async onLogin() {
     try {
       const result = await authorize(this.spotifyAuthConfig);
-      this.token = result.accessToken;
+      await SecureStore.setItemAsync('accessToken', result.accessToken);
       return result;
     } catch (error) {
       console.log(JSON.stringify(error));
